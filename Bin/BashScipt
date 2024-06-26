@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# Function to get CPU usage
+cpu_usage() {
+    echo "CPU Usage:"
+    mpstat | awk '$12 ~ /[0-9.]+/ { print 100 - $12"%"}'
+}
+
+# Function to get Memory usage
+memory_usage() {
+    echo "Memory Usage:"
+    free -h | awk 'NR==2{printf "Used: %s/%s (%.2f%%)\n", $3,$2,$3*100/$2 }'
+}
+
+# Function to get Disk usage
+disk_usage() {
+    echo "Disk Usage:"
+    df -h | awk '$NF=="/"{printf "Used: %d/%dGB (%s)\n", $3,$2,$5}'
+}
+
+# Function to get Network usage
+network_usage() {
+    echo "Network Usage:"
+    ifstat -t 1 1 | awk 'NR==4{printf "In: %s, Out: %s\n", $6, $8}'
+}
+
+# Function to get Uptime
+uptime_info() {
+    echo "Uptime:"
+    uptime -p
+}
+
+# Main function to display all metrics
+display_metrics() {
+    echo "Server Health Report:"
+    echo "----------------------"
+    cpu_usage
+    echo "----------------------"
+    memory_usage
+    echo "----------------------"
+    disk_usage
+    echo "----------------------"
+    network_usage
+    echo "----------------------"
+    uptime_info
+    echo "----------------------"
+}
+
+# Run the main function
+display_metrics
